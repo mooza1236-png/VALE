@@ -385,6 +385,35 @@ td.amt.pos{color:var(--green)}td.amt.neg{color:var(--red)}
 </div>
 
 <script>
+// ---------- Google Sheet sync ----------
+// Paste the Web App URL you get from Apps Script between the quotes below:
+const SHEET_URL = "https://script.google.com/macros/s/AKfycbw6CYGUBQjwhE7I3RRaCPwaivddVhV8vVWypkalbqkWKYFYG3dQq_yDJX-uArlSzHg/exec";
+const SYNC_ON = SHEET_URL.indexOf("http")===0;
+
+async function sheetLoad(){
+  if(!SYNC_ON)return;
+  try{
+    const r=await fetch(SHEET_URL);
+    const data=await r.json();
+    if(Array.isArray(data)){
+      state.entries=data.map(row=>({
+        type:row.type, date:row.date, cat:row.cat,
+        desc:row.desc, amt:parseFloat(row.amt)||0, meta:row.meta, by:row.by, id:row.id
+      }));
+      render();
+    }
+  }catch(err){flash('Could not load from sheet')}
+}
+function sheetSend(action,payload){
+  if(!SYNC_ON)return;
+  // no-cors POST: fire-and-forget, avoids CORS errors with Apps Script
+  fetch(SHEET_URL,{
+    method:'POST',mode:'no-cors',
+    headers:{'Content-Type':'text/plain'},
+    body:JSON.stringify({action,...payload})
+  }).catch(()=>{});
+}
+
 // ---------- state (in-memory) ----------
 const state = {
   entries: [],
@@ -440,6 +469,7 @@ function addEntry(type){
   const amt=parseFloat(document.getElementById(p+'-amt').value);
   if(!amt||amt<=0){flash('Enter an amount');return}
   const e={
+    id:Date.now().toString(36)+Math.random().toString(36).slice(2,6),
     type,
     date:document.getElementById(p+'-date').value||new Date().toISOString().slice(0,10),
     cat:document.getElementById(p+'-cat').value,
@@ -449,11 +479,17 @@ function addEntry(type){
     by:state.name
   };
   state.entries.push(e);
+  sheetSend('add',{row:e});
   document.getElementById(p+'-amt').value='';document.getElementById(p+'-desc').value='';
   render();flash(type==='income'?'Income added ✓':'Expense added ✓');
 }
-function delEntry(idx){state.entries.splice(idx,1);render()}
-function clearAll(){if(confirm('Delete ALL transactions?')){state.entries=[];render();flash('Cleared')}}
+function delEntry(idx){
+  const e=state.entries[idx];
+  state.entries.splice(idx,1);
+  if(e&&e.id)sheetSend('delete',{id:e.id});
+  render();
+}
+function clearAll(){if(confirm('Delete ALL transactions?')){state.entries=[];sheetSend('clear',{});render();flash('Cleared')}}
 
 // ---------- render ----------
 function render(){
@@ -541,6 +577,7 @@ const today=new Date().toISOString().slice(0,10);
 document.getElementById('in-date').value=today;
 document.getElementById('ex-date').value=today;
 renderSelects();renderChips();render();
+sheetLoad();
 </script>
 </body>
 </html>
