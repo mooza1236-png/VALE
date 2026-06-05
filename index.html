@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VALE — Boutique Bookkeeping</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=Spline+Sans+Mono:wght@400;500;600&family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f3f7fc;
+  --bg-2:#ffffff;
+  --surface:#ffffff;
+  --surface-2:#eef4fb;
+  --line:rgba(20,60,120,.10);
+  --line-2:rgba(20,60,120,.18);
+  --txt:#0d2647;
+  --txt-2:#43597a;
+  --txt-3:#8597b1;
+  --accent:#1f6df0;        /* royal blue */
+  --accent-2:#0a3d91;      /* deep navy */
+  --green:#1e9e6a;
+  --red:#e0556b;
+  --glow:0 0 0 1px rgba(31,109,240,.18), 0 16px 44px -18px rgba(31,109,240,.45);
+  --radius:18px;
+  --font:'Sora',sans-serif;
+  --mono:'Spline Sans Mono',monospace;
+}
+html[dir="rtl"]{--font:'IBM Plex Sans Arabic',sans-serif;}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  font-family:var(--font);background:var(--bg);color:var(--txt);
+  min-height:100vh;line-height:1.5;-webkit-font-smoothing:antialiased;
+  background-image:
+    radial-gradient(900px 500px at 12% -8%, rgba(31,109,240,.10), transparent 60%),
+    radial-gradient(700px 460px at 100% 0%, rgba(10,61,145,.07), transparent 55%);
+  background-attachment:fixed;
+}
+.en-only{display:inline}.ar-only{display:none}
+html[dir="rtl"] .en-only{display:none}html[dir="rtl"] .ar-only{display:inline}
+
+/* layout */
+.shell{max-width:1240px;margin:0 auto;padding:0 22px 90px}
+header.top{
+  position:sticky;top:0;z-index:50;backdrop-filter:blur(18px);
+  background:rgba(255,255,255,.78);border-bottom:1px solid var(--line);
+  padding:14px 22px;margin-bottom:34px;
+}
+.top-in{max-width:1240px;margin:0 auto;display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:12px;font-weight:800;font-size:1.18rem;letter-spacing:-.02em}
+.logo{
+  width:38px;height:38px;border-radius:11px;display:grid;place-items:center;
+  background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#fff;font-weight:800;
+  box-shadow:var(--glow);font-size:1.1rem;
+}
+.brand small{display:block;font-weight:400;font-size:.62rem;letter-spacing:.32em;color:var(--txt-3);text-transform:uppercase}
+nav.tabs{display:flex;gap:4px;margin-inline-start:auto;background:var(--surface);padding:5px;border-radius:14px;border:1px solid var(--line)}
+nav.tabs button{
+  font-family:var(--font);background:none;border:none;color:var(--txt-2);cursor:pointer;
+  padding:9px 16px;border-radius:10px;font-size:.86rem;font-weight:500;transition:.22s;white-space:nowrap;
+}
+nav.tabs button:hover{color:var(--txt)}
+nav.tabs button.active{background:var(--surface-2);color:var(--accent);box-shadow:inset 0 0 0 1px var(--line-2)}
+.lang-tog{display:flex;background:var(--surface);border:1px solid var(--line);border-radius:11px;overflow:hidden}
+.lang-tog button{font-family:var(--font);background:none;border:none;color:var(--txt-3);cursor:pointer;padding:9px 13px;font-size:.78rem;font-weight:600;transition:.2s}
+.lang-tog button.active{background:var(--accent);color:#fff}
+
+.view{display:none;animation:fade .4s ease}
+.view.active{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+.eyebrow{font-size:.72rem;letter-spacing:.3em;text-transform:uppercase;color:var(--accent);font-weight:600;margin-bottom:10px}
+h1.big{font-size:clamp(2rem,5vw,3.1rem);font-weight:800;letter-spacing:-.03em;line-height:1.05;margin-bottom:32px}
+h1.big em{font-style:normal;color:var(--accent)}
+
+/* KPI grid */
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:16px;margin-bottom:30px}
+.kpi{
+  background:linear-gradient(160deg,var(--surface),var(--surface-2));border:1px solid var(--line);
+  border-radius:var(--radius);padding:22px;position:relative;overflow:hidden;transition:.25s;
+  box-shadow:0 6px 24px -16px rgba(10,61,145,.35);
+}
+.kpi:hover{transform:translateY(-3px);border-color:var(--line-2)}
+.kpi::after{content:"";position:absolute;inset:0;background:radial-gradient(120px 80px at 100% 0,rgba(31,109,240,.10),transparent);pointer-events:none}
+.kpi .lbl{font-size:.74rem;color:var(--txt-2);font-weight:500;display:flex;justify-content:space-between;margin-bottom:14px}
+.kpi .lbl .tag{font-size:.6rem;letter-spacing:.18em;text-transform:uppercase;color:var(--txt-3)}
+.kpi .val{font-family:var(--mono);font-size:1.95rem;font-weight:600;letter-spacing:-.02em;display:flex;align-items:baseline;gap:6px}
+.kpi .val .cur{font-size:.8rem;color:var(--txt-3);font-weight:500}
+.kpi.income .val{color:var(--accent-2)}
+.kpi.expense .val{color:var(--red)}
+.kpi.profit .val{color:var(--accent)}
+.kpi .sub{font-size:.72rem;color:var(--txt-3);margin-top:8px}
+
+.row2{display:grid;grid-template-columns:1.4fr 1fr;gap:18px;margin-bottom:18px}
+.row2b{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:18px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:22px}
+.card h3{font-size:1rem;font-weight:600;display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
+.card h3 .mut{font-size:.72rem;color:var(--txt-3);font-weight:400}
+
+/* bar chart */
+.chart{display:flex;align-items:flex-end;gap:10px;height:200px;padding-top:10px}
+.bar-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;height:100%;justify-content:flex-end}
+.bars{display:flex;gap:3px;align-items:flex-end;height:100%;width:100%;justify-content:center}
+.bar{width:9px;border-radius:5px 5px 0 0;min-height:3px;transition:height .8s cubic-bezier(.2,.8,.2,1)}
+.bar.in{background:linear-gradient(var(--accent),var(--accent-2))}
+.bar.out{background:linear-gradient(#7fa9e8,#b9c9e0)}
+.bar-col .m{font-size:.62rem;color:var(--txt-3);font-family:var(--mono)}
+.legend{display:flex;gap:16px;font-size:.74rem;color:var(--txt-2);margin-top:14px}
+.legend span{display:flex;align-items:center;gap:6px}
+.dot{width:9px;height:9px;border-radius:3px}
+
+/* donut */
+.donut-wrap{display:flex;align-items:center;gap:20px;flex-wrap:wrap}
+.donut{width:150px;height:150px;flex-shrink:0}
+.cat-list{flex:1;min-width:140px;display:flex;flex-direction:column;gap:9px}
+.cat-row{display:flex;align-items:center;gap:9px;font-size:.8rem}
+.cat-row .nm{flex:1;color:var(--txt-2)}
+.cat-row .pc{font-family:var(--mono);color:var(--txt)}
+
+/* recent lists */
+.mini{display:flex;justify-content:space-between;align-items:center;padding:11px 0;border-bottom:1px solid var(--line)}
+.mini:last-child{border:none}
+.mini .l{display:flex;flex-direction:column;gap:2px}
+.mini .l .t{font-size:.86rem}
+.mini .l .d{font-size:.7rem;color:var(--txt-3)}
+.mini .amt{font-family:var(--mono);font-weight:600;font-size:.92rem}
+.mini .amt.pos{color:var(--green)}.mini .amt.neg{color:var(--red)}
+.empty{color:var(--txt-3);font-size:.84rem;text-align:center;padding:26px 0}
+
+/* forms */
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:18px}
+.fcard{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:24px;position:relative;overflow:hidden}
+.fcard.inc{border-top:3px solid var(--accent)}
+.fcard.exp{border-top:3px solid var(--red)}
+.fcard .fh{display:flex;align-items:center;gap:12px;margin-bottom:20px}
+.fcard .ico{width:40px;height:40px;border-radius:11px;display:grid;place-items:center;font-size:1.4rem;font-weight:700}
+.fcard.inc .ico{background:rgba(31,109,240,.12);color:var(--accent)}
+.fcard.exp .ico{background:rgba(255,107,122,.14);color:var(--red)}
+.fcard .fh h3{font-size:1.05rem}
+.fcard .fh p{font-size:.72rem;color:var(--txt-3)}
+.field{margin-bottom:14px}
+.field label{display:block;font-size:.72rem;color:var(--txt-2);margin-bottom:6px;font-weight:500}
+.field input,.field select{
+  width:100%;font-family:var(--font);background:var(--bg-2);border:1px solid var(--line);
+  color:var(--txt);padding:12px 13px;border-radius:11px;font-size:.9rem;transition:.2s;
+}
+.field input:focus,.field select:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(31,109,240,.14)}
+.field.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.field.two>div{display:flex;flex-direction:column}
+.btn{
+  width:100%;font-family:var(--font);font-weight:600;font-size:.92rem;cursor:pointer;
+  padding:13px;border-radius:12px;border:none;transition:.2s;margin-top:4px;
+}
+.btn.inc{background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#fff}
+.btn.exp{background:linear-gradient(135deg,var(--red),#c93f4e);color:#fff}
+.btn:hover{filter:brightness(1.08);transform:translateY(-1px)}
+.btn:active{transform:translateY(0)}
+
+/* tables */
+.tbl-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:22px;margin-bottom:18px}
+table{width:100%;border-collapse:collapse;font-size:.84rem}
+th{text-align:start;color:var(--txt-3);font-weight:500;font-size:.7rem;letter-spacing:.05em;text-transform:uppercase;padding:0 12px 12px;border-bottom:1px solid var(--line)}
+td{padding:13px 12px;border-bottom:1px solid var(--line);color:var(--txt-2)}
+tr:last-child td{border:none}
+tr:hover td{background:rgba(255,255,255,.02)}
+td.amt{font-family:var(--mono);font-weight:600}
+td.amt.pos{color:var(--green)}td.amt.neg{color:var(--red)}
+.pill{display:inline-block;padding:3px 10px;border-radius:20px;font-size:.7rem;background:var(--surface-2);color:var(--txt-2);border:1px solid var(--line)}
+.del{background:none;border:none;color:var(--txt-3);cursor:pointer;font-size:1rem;padding:4px 8px;border-radius:7px;transition:.2s}
+.del:hover{color:var(--red);background:rgba(255,107,122,.1)}
+
+/* settings */
+.set-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:18px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px;min-height:20px}
+.chip{display:flex;align-items:center;gap:7px;background:var(--surface-2);border:1px solid var(--line);border-radius:20px;padding:6px 7px 6px 13px;font-size:.8rem}
+.chip button{background:none;border:none;color:var(--txt-3);cursor:pointer;width:18px;height:18px;border-radius:50%;display:grid;place-items:center;font-size:.9rem;line-height:1}
+.chip button:hover{color:var(--red)}
+.add-row{display:flex;gap:8px}
+.add-row input{flex:1;font-family:var(--font);background:var(--bg-2);border:1px solid var(--line);color:var(--txt);padding:10px 12px;border-radius:10px;font-size:.85rem}
+.add-row input:focus{outline:none;border-color:var(--accent)}
+.add-row button{background:var(--surface-2);border:1px solid var(--line-2);color:var(--accent);cursor:pointer;padding:0 18px;border-radius:10px;font-weight:600;font-family:var(--font)}
+.add-row button:hover{background:var(--accent);color:#fff}
+.danger{border-color:rgba(255,107,122,.3)!important;background:rgba(255,107,122,.04)}
+.danger h3{color:var(--red)}
+.danger p{font-size:.8rem;color:var(--txt-2);margin-bottom:16px}
+.btn-danger{background:rgba(255,107,122,.12);border:1px solid rgba(255,107,122,.35);color:var(--red);padding:11px 20px;border-radius:11px;cursor:pointer;font-family:var(--font);font-weight:600}
+.btn-danger:hover{background:var(--red);color:#fff}
+.note{font-size:.78rem;color:var(--txt-2);line-height:1.6;margin-bottom:16px}
+
+@media(max-width:860px){
+  .row2,.row2b,.form-grid,.set-grid{grid-template-columns:1fr}
+  nav.tabs{order:3;width:100%;justify-content:center;margin:0}
+  .brand{order:1}.lang-tog{order:2;margin-inline-start:auto}
+  th:nth-child(4),td:nth-child(4){display:none}
+}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="top-in">
+    <div class="brand">
+      <div class="logo">V</div>
+      <div>VALE<small>Boutique Bookkeeping</small></div>
+    </div>
+    <nav class="tabs">
+      <button class="active" data-view="dash"><span class="en-only">Dashboard</span><span class="ar-only">الرئيسية</span></button>
+      <button data-view="entry"><span class="en-only">Add Entry</span><span class="ar-only">إدخال</span></button>
+      <button data-view="logs"><span class="en-only">Logs</span><span class="ar-only">السجلات</span></button>
+      <button data-view="settings"><span class="en-only">Settings</span><span class="ar-only">الإعدادات</span></button>
+    </nav>
+    <div class="lang-tog">
+      <button class="active" data-lang="en">EN</button>
+      <button data-lang="ar">AR</button>
+    </div>
+  </div>
+</header>
+
+<div class="shell">
+
+<!-- DASHBOARD -->
+<section class="view active" id="dash">
+  <div class="eyebrow"><span class="en-only">Daily Overview</span><span class="ar-only">نظرة يومية</span></div>
+  <h1 class="big"><span class="en-only">Your <em>boutique</em> at a glance</span><span class="ar-only">متجرك في <em>لمحة</em></span></h1>
+
+  <div class="kpis">
+    <div class="kpi income">
+      <div class="lbl"><span class="en-only">Total Income</span><span class="ar-only">إجمالي الدخل</span><span class="tag">IN</span></div>
+      <div class="val"><span id="k-income">0</span><span class="cur">EGP</span></div>
+      <div class="sub" id="k-income-sub">—</div>
+    </div>
+    <div class="kpi expense">
+      <div class="lbl"><span class="en-only">Total Expenses</span><span class="ar-only">إجمالي المصروفات</span><span class="tag">OUT</span></div>
+      <div class="val"><span id="k-expense">0</span><span class="cur">EGP</span></div>
+      <div class="sub" id="k-expense-sub">—</div>
+    </div>
+    <div class="kpi profit">
+      <div class="lbl"><span class="en-only">Net Profit</span><span class="ar-only">صافي الربح</span><span class="tag">NET</span></div>
+      <div class="val"><span id="k-profit">0</span><span class="cur">EGP</span></div>
+      <div class="sub"><span class="en-only">Margin</span><span class="ar-only">الهامش</span> <span id="k-margin">0%</span></div>
+    </div>
+    <div class="kpi">
+      <div class="lbl"><span class="en-only">Transactions</span><span class="ar-only">عدد العمليات</span><span class="tag">#</span></div>
+      <div class="val"><span id="k-count">0</span></div>
+      <div class="sub"><span class="en-only">entries logged</span><span class="ar-only">قيد مسجّل</span></div>
+    </div>
+  </div>
+
+  <div class="row2">
+    <div class="card">
+      <h3><span><span class="en-only">Monthly Performance</span><span class="ar-only">الأداء الشهري</span></span><span class="mut"><span class="en-only">Income vs Expenses · 2025</span><span class="ar-only">دخل / مصروف · ٢٠٢٥</span></span></h3>
+      <div class="chart" id="chart"></div>
+      <div class="legend">
+        <span><span class="dot" style="background:var(--accent)"></span><span class="en-only">Income</span><span class="ar-only">دخل</span></span>
+        <span><span class="dot" style="background:#9bbbe8"></span><span class="en-only">Expenses</span><span class="ar-only">مصروف</span></span>
+      </div>
+    </div>
+    <div class="card">
+      <h3><span><span class="en-only">Where money goes</span><span class="ar-only">إلى أين تذهب الأموال</span></span><span class="mut"><span class="en-only">By category</span><span class="ar-only">بالفئة</span></span></h3>
+      <div class="donut-wrap">
+        <svg class="donut" id="donut" viewBox="0 0 42 42"></svg>
+        <div class="cat-list" id="cat-list"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row2b">
+    <div class="card">
+      <h3><span><span class="en-only">Recent Income</span><span class="ar-only">أحدث دخل</span></span><span class="mut"><span class="en-only">Last 5</span><span class="ar-only">آخر ٥</span></span></h3>
+      <div id="recent-in"></div>
+    </div>
+    <div class="card">
+      <h3><span><span class="en-only">Recent Expenses</span><span class="ar-only">أحدث مصروف</span></span><span class="mut"><span class="en-only">Last 5</span><span class="ar-only">آخر ٥</span></span></h3>
+      <div id="recent-out"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ENTRY -->
+<section class="view" id="entry">
+  <div class="eyebrow"><span class="en-only">Quick Entry</span><span class="ar-only">إدخال سريع</span></div>
+  <h1 class="big"><span class="en-only">Log it. Move <em>on</em>.</span><span class="ar-only">سجّل ثم <em>تابع</em></span></h1>
+
+  <div class="form-grid">
+    <div class="fcard inc">
+      <div class="fh"><div class="ico">+</div><div><h3><span class="en-only">Add Income</span><span class="ar-only">إضافة دخل</span></h3><p><span class="en-only">A sale</span><span class="ar-only">عملية بيع</span></p></div></div>
+      <div class="field two">
+        <div><label><span class="en-only">Date</span><span class="ar-only">التاريخ</span></label><input type="date" id="in-date"></div>
+        <div><label><span class="en-only">Category</span><span class="ar-only">الفئة</span></label><select id="in-cat"></select></div>
+      </div>
+      <div class="field"><label><span class="en-only">Description</span><span class="ar-only">الوصف</span></label><input type="text" id="in-desc" placeholder="…"></div>
+      <div class="field two">
+        <div><label><span class="en-only">Amount</span><span class="ar-only">المبلغ</span></label><input type="number" id="in-amt" placeholder="0" min="0"></div>
+        <div><label><span class="en-only">Channel</span><span class="ar-only">القناة</span></label><select id="in-chan"></select></div>
+      </div>
+      <button class="btn inc" onclick="addEntry('income')"><span class="en-only">+ Add Income</span><span class="ar-only">+ إضافة دخل</span></button>
+    </div>
+
+    <div class="fcard exp">
+      <div class="fh"><div class="ico">−</div><div><h3><span class="en-only">Add Expense</span><span class="ar-only">إضافة مصروف</span></h3><p><span class="en-only">A cost</span><span class="ar-only">تكلفة</span></p></div></div>
+      <div class="field two">
+        <div><label><span class="en-only">Date</span><span class="ar-only">التاريخ</span></label><input type="date" id="ex-date"></div>
+        <div><label><span class="en-only">Category</span><span class="ar-only">الفئة</span></label><select id="ex-cat"></select></div>
+      </div>
+      <div class="field"><label><span class="en-only">Description</span><span class="ar-only">الوصف</span></label><input type="text" id="ex-desc" placeholder="…"></div>
+      <div class="field two">
+        <div><label><span class="en-only">Amount</span><span class="ar-only">المبلغ</span></label><input type="number" id="ex-amt" placeholder="0" min="0"></div>
+        <div><label><span class="en-only">Payment</span><span class="ar-only">الدفع</span></label><select id="ex-pay"></select></div>
+      </div>
+      <button class="btn exp" onclick="addEntry('expense')"><span class="en-only">− Add Expense</span><span class="ar-only">− إضافة مصروف</span></button>
+    </div>
+  </div>
+</section>
+
+<!-- LOGS -->
+<section class="view" id="logs">
+  <div class="eyebrow"><span class="en-only">Records</span><span class="ar-only">السجلات</span></div>
+  <h1 class="big"><span class="en-only">Every <em>entry</em>, kept.</span><span class="ar-only">كل <em>قيد</em> محفوظ</span></h1>
+
+  <div class="tbl-card">
+    <h3><span><span class="en-only">Income Log</span><span class="ar-only">سجل الدخل</span></span><span class="mut" id="in-count">0</span></h3>
+    <table><thead><tr>
+      <th><span class="en-only">Date</span><span class="ar-only">التاريخ</span></th>
+      <th><span class="en-only">Category</span><span class="ar-only">الفئة</span></th>
+      <th><span class="en-only">Description</span><span class="ar-only">الوصف</span></th>
+      <th><span class="en-only">Channel</span><span class="ar-only">القناة</span></th>
+      <th style="text-align:end"><span class="en-only">Amount</span><span class="ar-only">المبلغ</span></th><th></th>
+    </tr></thead><tbody id="in-body"></tbody></table>
+  </div>
+
+  <div class="tbl-card">
+    <h3><span><span class="en-only">Expense Log</span><span class="ar-only">سجل المصروفات</span></span><span class="mut" id="ex-count">0</span></h3>
+    <table><thead><tr>
+      <th><span class="en-only">Date</span><span class="ar-only">التاريخ</span></th>
+      <th><span class="en-only">Category</span><span class="ar-only">الفئة</span></th>
+      <th><span class="en-only">Description</span><span class="ar-only">الوصف</span></th>
+      <th><span class="en-only">Payment</span><span class="ar-only">الدفع</span></th>
+      <th style="text-align:end"><span class="en-only">Amount</span><span class="ar-only">المبلغ</span></th><th></th>
+    </tr></thead><tbody id="ex-body"></tbody></table>
+  </div>
+</section>
+
+<!-- SETTINGS -->
+<section class="view" id="settings">
+  <div class="eyebrow"><span class="en-only">Customize</span><span class="ar-only">تخصيص</span></div>
+  <h1 class="big"><span class="en-only">Make it <em>yours</em></span><span class="ar-only">خصّصه <em>لنفسك</em></span></h1>
+
+  <div class="set-grid">
+    <div class="card">
+      <h3><span class="en-only">Income Categories</span><span class="ar-only">فئات الدخل</span></h3>
+      <div class="chips" id="chips-incat"></div>
+      <div class="add-row"><input id="add-incat" placeholder="…"><button onclick="addChip('incat')"><span class="en-only">Add</span><span class="ar-only">إضافة</span></button></div>
+    </div>
+    <div class="card">
+      <h3><span class="en-only">Expense Categories</span><span class="ar-only">فئات المصروفات</span></h3>
+      <div class="chips" id="chips-excat"></div>
+      <div class="add-row"><input id="add-excat" placeholder="…"><button onclick="addChip('excat')"><span class="en-only">Add</span><span class="ar-only">إضافة</span></button></div>
+    </div>
+    <div class="card">
+      <h3><span class="en-only">Sales Channels</span><span class="ar-only">قنوات البيع</span></h3>
+      <div class="chips" id="chips-chan"></div>
+      <div class="add-row"><input id="add-chan" placeholder="…"><button onclick="addChip('chan')"><span class="en-only">Add</span><span class="ar-only">إضافة</span></button></div>
+    </div>
+    <div class="card">
+      <h3><span class="en-only">Payment Methods</span><span class="ar-only">وسائل الدفع</span></h3>
+      <div class="chips" id="chips-pay"></div>
+      <div class="add-row"><input id="add-pay" placeholder="…"><button onclick="addChip('pay')"><span class="en-only">Add</span><span class="ar-only">إضافة</span></button></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3><span class="en-only">Your Profile</span><span class="ar-only">ملفك</span></h3>
+    <p class="note"><span class="en-only">Set your name so each entry is tagged with who added it.</span><span class="ar-only">اكتب اسمك ليُسجّل مع كل بند من أضافه.</span></p>
+    <div class="add-row"><input id="user-name" placeholder="Your name / اسمك"><button onclick="saveName()"><span class="en-only">Save</span><span class="ar-only">حفظ</span></button></div>
+  </div>
+
+  <div class="card danger" style="margin-top:18px">
+    <h3><span class="en-only">Danger Zone</span><span class="ar-only">منطقة الحذر</span></h3>
+    <p><span class="en-only">Delete every transaction. Categories will stay. This cannot be undone.</span><span class="ar-only">حذف جميع العمليات. الفئات تبقى. لا يمكن التراجع.</span></p>
+    <button class="btn-danger" onclick="clearAll()"><span class="en-only">Clear All Data</span><span class="ar-only">حذف كل البيانات</span></button>
+  </div>
+</section>
+
+</div>
+
+<script>
+// ---------- state (in-memory) ----------
+const state = {
+  entries: [],
+  incat:['Retail Sales','Online Store','Wholesale','Custom Orders'],
+  excat:['Stock / Fabric','Rent','Salaries','Marketing','Shipping','Utilities'],
+  chan:['Boutique','Instagram','Website','WhatsApp'],
+  pay:['Cash','Card','Instapay','Bank Transfer'],
+  name:''
+};
+const MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const PALETTE=['#1f6df0','#0a3d91','#5b9bff','#86b7ff','#2b5bbf','#a9c8ff','#3f7fe0','#0e2a66'];
+const fmt=n=>Math.round(n).toLocaleString('en-US');
+
+// ---------- nav ----------
+document.querySelectorAll('nav.tabs button').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('nav.tabs button').forEach(x=>x.classList.remove('active'));
+  document.querySelectorAll('.view').forEach(x=>x.classList.remove('active'));
+  b.classList.add('active');
+  document.getElementById(b.dataset.view).classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+});
+document.querySelectorAll('.lang-tog button').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('.lang-tog button').forEach(x=>x.classList.remove('active'));
+  b.classList.add('active');
+  const ar=b.dataset.lang==='ar';
+  document.documentElement.lang=ar?'ar':'en';
+  document.documentElement.dir=ar?'rtl':'ltr';
+});
+
+// ---------- selects & chips ----------
+function fillSelect(id,arr){const s=document.getElementById(id);s.innerHTML=arr.map(x=>`<option>${x}</option>`).join('')}
+function renderSelects(){
+  fillSelect('in-cat',state.incat);fillSelect('ex-cat',state.excat);
+  fillSelect('in-chan',state.chan);fillSelect('ex-pay',state.pay);
+}
+const chipMap={incat:'chips-incat',excat:'chips-excat',chan:'chips-chan',pay:'chips-pay'};
+function renderChips(){
+  for(const k in chipMap){
+    document.getElementById(chipMap[k]).innerHTML=state[k].map((v,i)=>
+      `<span class="chip">${v}<button onclick="rmChip('${k}',${i})">×</button></span>`).join('')||'<span class="empty">—</span>';
+  }
+}
+function addChip(k){
+  const inp=document.getElementById('add-'+k);const v=inp.value.trim();
+  if(!v)return;state[k].push(v);inp.value='';renderChips();renderSelects();
+}
+function rmChip(k,i){state[k].splice(i,1);renderChips();renderSelects()}
+function saveName(){state.name=document.getElementById('user-name').value.trim();flash('Saved ✓')}
+
+// ---------- entries ----------
+function addEntry(type){
+  const p=type==='income'?'in':'ex';
+  const amt=parseFloat(document.getElementById(p+'-amt').value);
+  if(!amt||amt<=0){flash('Enter an amount');return}
+  const e={
+    type,
+    date:document.getElementById(p+'-date').value||new Date().toISOString().slice(0,10),
+    cat:document.getElementById(p+'-cat').value,
+    desc:document.getElementById(p+'-desc').value||'—',
+    amt,
+    meta:type==='income'?document.getElementById('in-chan').value:document.getElementById('ex-pay').value,
+    by:state.name
+  };
+  state.entries.push(e);
+  document.getElementById(p+'-amt').value='';document.getElementById(p+'-desc').value='';
+  render();flash(type==='income'?'Income added ✓':'Expense added ✓');
+}
+function delEntry(idx){state.entries.splice(idx,1);render()}
+function clearAll(){if(confirm('Delete ALL transactions?')){state.entries=[];render();flash('Cleared')}}
+
+// ---------- render ----------
+function render(){
+  const inc=state.entries.filter(e=>e.type==='income');
+  const exp=state.entries.filter(e=>e.type==='expense');
+  const ti=inc.reduce((s,e)=>s+e.amt,0), te=exp.reduce((s,e)=>s+e.amt,0);
+  const net=ti-te, margin=ti?Math.round(net/ti*100):0;
+
+  document.getElementById('k-income').textContent=fmt(ti);
+  document.getElementById('k-expense').textContent=fmt(te);
+  document.getElementById('k-profit').textContent=fmt(net);
+  document.getElementById('k-margin').textContent=margin+'%';
+  document.getElementById('k-count').textContent=state.entries.length;
+  document.getElementById('k-income-sub').textContent=inc.length+' entries';
+  document.getElementById('k-expense-sub').textContent=exp.length+' entries';
+
+  renderChart(inc,exp);
+  renderDonut(exp);
+  renderRecent('recent-in',inc,'pos');
+  renderRecent('recent-out',exp,'neg');
+  renderTable('in-body',inc,'pos');
+  renderTable('ex-body',exp,'neg');
+  document.getElementById('in-count').textContent=inc.length+' entries';
+  document.getElementById('ex-count').textContent=exp.length+' entries';
+}
+
+function renderChart(inc,exp){
+  const inM=Array(12).fill(0),exM=Array(12).fill(0);
+  inc.forEach(e=>inM[new Date(e.date).getMonth()]+=e.amt);
+  exp.forEach(e=>exM[new Date(e.date).getMonth()]+=e.amt);
+  const max=Math.max(1,...inM,...exM);
+  document.getElementById('chart').innerHTML=MONTHS.map((m,i)=>`
+    <div class="bar-col">
+      <div class="bars">
+        <div class="bar in" style="height:${inM[i]/max*100}%" title="${m} in: ${fmt(inM[i])}"></div>
+        <div class="bar out" style="height:${exM[i]/max*100}%" title="${m} out: ${fmt(exM[i])}"></div>
+      </div>
+      <div class="m">${m[0]}</div>
+    </div>`).join('');
+}
+
+function renderDonut(exp){
+  const by={};exp.forEach(e=>by[e.cat]=(by[e.cat]||0)+e.amt);
+  const total=Object.values(by).reduce((a,b)=>a+b,0);
+  const svg=document.getElementById('donut'),list=document.getElementById('cat-list');
+  if(!total){svg.innerHTML='<circle cx="21" cy="21" r="15.9" fill="none" stroke="var(--line)" stroke-width="4"/>';list.innerHTML='<div class="empty">No expenses yet</div>';return}
+  let off=0,html='';const rows=[];
+  Object.entries(by).sort((a,b)=>b[1]-a[1]).forEach(([k,v],i)=>{
+    const pc=v/total*100,c=PALETTE[i%PALETTE.length];
+    html+=`<circle cx="21" cy="21" r="15.9" fill="none" stroke="${c}" stroke-width="4" stroke-dasharray="${pc} ${100-pc}" stroke-dashoffset="${-off}" transform="rotate(-90 21 21)"/>`;
+    off+=pc;rows.push(`<div class="cat-row"><span class="dot" style="background:${c}"></span><span class="nm">${k}</span><span class="pc">${Math.round(pc)}%</span></div>`);
+  });
+  svg.innerHTML=html;list.innerHTML=rows.join('');
+}
+
+function renderRecent(id,arr,cls){
+  const el=document.getElementById(id);
+  const items=[...arr].reverse().slice(0,5);
+  if(!items.length){el.innerHTML='<div class="empty">Nothing yet</div>';return}
+  el.innerHTML=items.map(e=>`<div class="mini"><div class="l"><span class="t">${e.cat}</span><span class="d">${e.date} · ${e.desc}</span></div><span class="amt ${cls}">${cls==='pos'?'+':'-'}${fmt(e.amt)}</span></div>`).join('');
+}
+
+function renderTable(id,arr,cls){
+  const el=document.getElementById(id);
+  if(!arr.length){el.innerHTML='<tr><td colspan="6"><div class="empty">No entries</div></td></tr>';return}
+  el.innerHTML=[...arr].reverse().map(e=>{
+    const gi=state.entries.indexOf(e);
+    return `<tr><td>${e.date}</td><td><span class="pill">${e.cat}</span></td><td>${e.desc}</td><td>${e.meta}</td><td class="amt ${cls}" style="text-align:end">${cls==='pos'?'+':'-'}${fmt(e.amt)}</td><td style="text-align:end"><button class="del" onclick="delEntry(${gi})">🗑</button></td></tr>`;
+  }).join('');
+}
+
+// ---------- toast ----------
+let toastT;
+function flash(msg){
+  let t=document.getElementById('toast');
+  if(!t){t=document.createElement('div');t.id='toast';
+    t.style.cssText='position:fixed;bottom:26px;left:50%;transform:translateX(-50%);background:var(--surface-2);color:var(--txt);border:1px solid var(--line-2);padding:12px 22px;border-radius:12px;font-size:.85rem;font-weight:500;z-index:99;box-shadow:0 10px 30px rgba(0,0,0,.4);transition:.3s;opacity:0';
+    document.body.appendChild(t);}
+  t.textContent=msg;t.style.opacity='1';t.style.transform='translateX(-50%) translateY(0)';
+  clearTimeout(toastT);toastT=setTimeout(()=>{t.style.opacity='0';t.style.transform='translateX(-50%) translateY(10px)'},1800);
+}
+
+// ---------- init ----------
+const today=new Date().toISOString().slice(0,10);
+document.getElementById('in-date').value=today;
+document.getElementById('ex-date').value=today;
+renderSelects();renderChips();render();
+</script>
+</body>
+</html>
